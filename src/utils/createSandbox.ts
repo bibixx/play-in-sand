@@ -9,8 +9,7 @@ import {
   getSandboxTmpPath,
 } from "./paths";
 import { tmpSandboxExists } from "./tmpSandboxExists";
-import { SANDBOX_METADATA_FOLDER } from "../constants";
-import { runNodeFile } from "./runNodeFile";
+import { prepareAfterCopy } from "./prepareAfterCopy";
 
 export const createSandbox = async (sandbox: string, sandboxName: string) => {
   const sandboxTargetDirectory = getSandboxTargetPath();
@@ -51,18 +50,7 @@ export const createSandbox = async (sandbox: string, sandboxName: string) => {
     });
   }
 
-  const metadataPrepareDirectory = path.join(
-    sandboxTargetPath,
-    SANDBOX_METADATA_FOLDER
-  );
-  const metadataPreparePath = path.join(
-    metadataPrepareDirectory,
-    "prepare.mjs"
-  );
-
-  if (existsSync(metadataPreparePath)) {
-    await runNodeFile(metadataPreparePath);
-  }
+  await prepareAfterCopy(sandboxTargetPath, sandboxName);
 
   return sandboxName;
 };

@@ -18,6 +18,7 @@
     "esbuild": "^0.15.11"
   },
   "dependencies": {
+    "@humanwhocodes/module-importer": "^1.0.1",
     "chalk": "^5.1.2",
     "clipboardy": "^3.0.0",
     "fs-extra": "^10.1.0",

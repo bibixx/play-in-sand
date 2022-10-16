@@ -13,11 +13,8 @@ function getProxy() {
   return new Proxy(function () {}, handlers);
 }
 
-function mapCommand(command: string) {
-  return `${command};`;
-}
-
-export const getCommands = (fn: (chalk: ChalkInstance) => string[]) => {
+export type GetCommandsFunction = (chalk: ChalkInstance) => string[];
+export const getFormattedCommands = (fn: GetCommandsFunction) => {
   const chalkPlainTextProxy = getProxy() as ChalkInstance;
   const pretty = fn(originalChalk).map((c) => `${c}${originalChalk.grey(";")}`);
   const plain = fn(chalkPlainTextProxy).map((c) => `${c};`);

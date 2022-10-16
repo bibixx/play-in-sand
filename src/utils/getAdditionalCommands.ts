@@ -1,11 +1,17 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { SANDBOX_METADATA_FOLDER } from "../constants";
-import { execPromise } from "./execPromise";
+import { GetCommandsFunction } from "./getCommands";
 
-export const getAdditionalCommands = async (
+// TODO: Validate import
+interface CommandsModule {
+  getCommands: GetCommandsFunction;
+}
+
+export const getFunctionForAdditionalCommands = async (
   sandboxTargetPath: string
-): Promise<string[]> => {
+): Promise<GetCommandsFunction> => {
   const metadataPrepareDirectory = path.join(
     sandboxTargetPath,
     SANDBOX_METADATA_FOLDER
@@ -16,10 +22,12 @@ export const getAdditionalCommands = async (
   );
 
   if (existsSync(metadataPreparePath)) {
-    const output = await execPromise(`node ${metadataPreparePath}`);
-    const cleanedUpValues = output.trim();
-    return cleanedUpValues.split("\n");
+    const module = (await import(
+      pathToFileURL(metadataPreparePath).href
+    )) as CommandsModule;
+
+    return module.getCommands;
   }
 
-  return [];
+  return () => [];
 };

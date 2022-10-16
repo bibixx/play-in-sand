@@ -7,10 +7,10 @@ import { getSandboxList } from "../utils/getSandboxList";
 import { getSandboxDataPath, getSandboxTargetPath } from "../utils/paths";
 import { createSandboxName } from "../utils/createSandboxName";
 import { spawnInBackground } from "../utils/spawnInBackground";
-import { getCommands } from "../utils/getCommands";
+import { getFormattedCommands } from "../utils/getCommands";
 import { logError, logInfo, logSuccess } from "../utils/userLog";
 import { injectPlayInSandMetadata } from "../utils/injectPlayInSandMetadata";
-import { getAdditionalCommands } from "../utils/getAdditionalCommands";
+import { getFunctionForAdditionalCommands } from "../utils/getAdditionalCommands";
 
 export interface InCommandOptions {
   outputName?: string;
@@ -39,11 +39,13 @@ export const inCommand = async (
 
   await createSandbox(sandboxTemplateName, sandboxName);
 
-  const additionalCommands = await getAdditionalCommands(sandboxTargetPath);
+  const additionalCommands = await getFunctionForAdditionalCommands(
+    sandboxTargetPath
+  );
 
-  const { pretty, plain } = getCommands((chalk) => [
+  const { pretty, plain } = getFormattedCommands((chalk) => [
     `${chalk.cyan("cd")} ${sandboxTargetPath}`,
-    ...additionalCommands.map((command) => chalk.cyan(command)),
+    ...additionalCommands(chalk),
   ]);
 
   await injectPlayInSandMetadata(sandboxTargetPath, sandboxTemplateName);
