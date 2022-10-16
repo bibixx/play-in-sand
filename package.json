@@ -1,0 +1,27 @@
+{
+  "name": "play-in-sand",
+  "version": "0.0.1",
+  "repository": "git@github.com:bibixx/play-in-sand.git",
+  "author": "Bartosz Legięć <play-in-sand@b.legiec.io>",
+  "license": "MIT",
+  "bin": {
+    "play": "dist/cli.mjs"
+  },
+  "scripts": {
+    "dev": "npm run dev:build -- --watch",
+    "dev:build": "esbuild src/cli.ts --outfile=dist/cli.mjs --bundle --platform=node --target=node16 --sourcemap=inline --format=esm --external:./node_modules/*"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^18.11.0",
+    "@types/yargs": "^17.0.13",
+    "esbuild": "^0.15.11"
+  },
+  "dependencies": {
+    "chalk": "^5.1.2",
+    "clipboardy": "^3.0.0",
+    "fs-extra": "^10.1.0",
+    "unique-names-generator": "^4.7.1",
+    "yargs": "^17.6.0"
+  }
+}
