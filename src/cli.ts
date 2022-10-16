@@ -3,6 +3,7 @@ import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 import { inCommand } from "./commands/in";
 import { prepare } from "./commands/prepare";
+import { removeCommand } from "./commands/remove";
 
 yargs(hideBin(process.argv))
   .command(
@@ -44,6 +45,12 @@ yargs(hideBin(process.argv))
         .demandOption("sandbox");
     },
     (argv) => prepare(argv.sandbox)
+  )
+  .command(
+    "remove",
+    "remove the most recent sandbox",
+    () => {},
+    (argv) => removeCommand()
   )
   .hide("prepare")
   .demandCommand(1, 1, "")

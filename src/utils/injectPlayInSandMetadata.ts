@@ -1,4 +1,4 @@
-import { ensureFile } from "fs-extra";
+import { emptyDir, ensureFile } from "fs-extra";
 import { existsSync } from "node:fs";
 import { appendFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -16,17 +16,15 @@ export const injectPlayInSandMetadata = async (
     await writeFile(gitIgnorePath, "# Play in Sandbox metadata\n.sand");
   }
 
-  const metaDataFilePath = path.join(
-    sandboxPath,
-    SANDBOX_METADATA_FOLDER,
-    "sand.json"
-  );
+  const metaDataFileDirectory = path.join(sandboxPath, SANDBOX_METADATA_FOLDER);
+  const metaDataFilePath = path.join(metaDataFileDirectory, "sand.json");
 
   const metadata = {
     createdAt: Date.now(),
     sandboxTemplateName,
   };
 
+  await emptyDir(metaDataFileDirectory);
   await ensureFile(metaDataFilePath);
   await writeFile(metaDataFilePath, JSON.stringify(metadata, null, 2));
 

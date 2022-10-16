@@ -10,6 +10,7 @@ import { spawnInBackground } from "../utils/spawnInBackground";
 import { getCommands } from "../utils/getCommands";
 import { logError, logInfo, logSuccess } from "../utils/userLog";
 import { injectPlayInSandMetadata } from "../utils/injectPlayInSandMetadata";
+import { getAdditionalCommands } from "../utils/getAdditionalCommands";
 
 export interface InCommandOptions {
   outputName?: string;
@@ -37,13 +38,16 @@ export const inCommand = async (
   logInfo(`Creating new sandbox in ${chalk.green(sandboxTargetPath)}`);
 
   await createSandbox(sandboxTemplateName, sandboxName);
-  await injectPlayInSandMetadata(sandboxTargetPath, sandboxTemplateName);
-  logSuccess(chalk.bold.green(`Done 🚀`));
+
+  const additionalCommands = await getAdditionalCommands(sandboxTargetPath);
 
   const { pretty, plain } = getCommands((chalk) => [
     `${chalk.cyan("cd")} ${sandboxTargetPath}`,
-    chalk.cyan("npm run dev"),
+    ...additionalCommands.map((command) => chalk.cyan(command)),
   ]);
+
+  await injectPlayInSandMetadata(sandboxTargetPath, sandboxTemplateName);
+  logSuccess(chalk.bold.green(`Done 🚀`));
   console.log();
   if (copy) {
     logInfo(`Now run: ${chalk.italic.grey("(copied to clipboard)")}`);
