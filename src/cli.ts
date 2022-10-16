@@ -7,7 +7,7 @@ import { removeCommand } from "./commands/remove";
 
 yargs(hideBin(process.argv))
   .command(
-    "in [sandbox] [name]",
+    ["in [sandbox] [name]", "with [sandbox] [name]"],
     "create and run a sandbox",
     (yargs) => {
       return yargs
